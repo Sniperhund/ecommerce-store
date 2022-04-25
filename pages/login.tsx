@@ -1,7 +1,7 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { useState } from "react";
 import { auth } from "../lib/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { useToast, Input, Link, Button, Heading, Text, ButtonGroup, Image } from '@chakra-ui/react'
 import Router from "next/router";
 
@@ -10,6 +10,8 @@ function Login() {
     const [password, setPassword] = useState<string>("");
 
     const toast = useToast();
+
+    auth.setPersistence(browserSessionPersistence);
 
     return (
         <div>
@@ -34,43 +36,7 @@ function Login() {
                             if (e.key === "Enter") {
                                 e.preventDefault();
 
-                                signInWithEmailAndPassword(auth, emailAddr, password)
-                                .then(async (userCredential) => {
-                                    const user = userCredential.user;
-
-                                    toast({
-                                        title: "Login successful",
-                                        description: "You'll be redirected in 5 seconds",
-                                        status: "success",
-                                        duration: 5000,
-                                        isClosable: true,
-                                    })
-
-                                    await new Promise(resolve => setTimeout(resolve, 5000));
-
-                                    Router.push("/");
-                                }).catch((error) => {
-                                    const errorCode = error.code;
-                                    var errorMessage = "";
-                                    switch (errorCode) {
-                                        case "auth/invalid-password":
-                                            errorMessage = "The password is invalid. It has to be at least 6 characters.";
-                                            break;
-                                        case "auth/user-not-found":
-                                            errorMessage = "No account matching those credentials could be found.";
-                                            break;
-                                        default:
-                                            errorMessage = "Something went wrong";
-                                            break;
-                                    }
-                                    toast({
-                                        title: "Error",
-                                        description: errorMessage,
-                                        status: "error",
-                                        duration: 3000,
-                                        isClosable: true,
-                                    })
-                                });
+                                login(emailAddr, password, toast);
                             }
                         }} />
                         <div className="flex items-center justify-between">
@@ -80,46 +46,10 @@ function Login() {
                                 Reset your password
                             </Link>
                         <div>
-                            <Button colorScheme="blue" width="full" height="10" onClick={(e) => {
+                            <Button colorScheme="blue" width="full" height="10" onClick={async (e) => {
                                 e.preventDefault();
 
-                                signInWithEmailAndPassword(auth, emailAddr, password)
-                                .then(async (userCredential) => {
-                                    const user = userCredential.user;
-
-                                    toast({
-                                        title: "Login successful",
-                                        description: "You'll be redirected in 5 seconds",
-                                        status: "success",
-                                        duration: 5000,
-                                        isClosable: true,
-                                    })
-
-                                    await new Promise(resolve => setTimeout(resolve, 5000));
-
-                                    Router.push("/dashboard");
-                                }).catch((error) => {
-                                    const errorCode = error.code;
-                                    var errorMessage = "";
-                                    switch (errorCode) {
-                                        case "auth/invalid-password":
-                                            errorMessage = "The password is invalid. It has to be at least 6 characters.";
-                                            break;
-                                        case "auth/user-not-found":
-                                            errorMessage = "No account matching those credentials could be found.";
-                                            break;
-                                        default:
-                                            errorMessage = "Something went wrong";
-                                            break;
-                                    }
-                                    toast({
-                                        title: "Error",
-                                        description: errorMessage,
-                                        status: "error",
-                                        duration: 3000,
-                                        isClosable: true,
-                                    })
-                                });
+                                login(emailAddr, password, toast);
                             }}>
                                 Sign in
                             </Button>
@@ -161,6 +91,46 @@ function Login() {
             </div>
         </div>
     )
+}
+
+function login(email: string, password: string, toast: any) {
+    signInWithEmailAndPassword(auth, email, password)
+    .then(async (userCredential) => {
+        const user = userCredential.user;
+
+        toast({
+            title: "Login successful",
+            description: "You'll be redirected in 5 seconds",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+        })
+
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        Router.push("/");
+    }).catch((error) => {
+        const errorCode = error.code;
+        var errorMessage = "";
+        switch (errorCode) {
+            case "auth/invalid-password":
+                errorMessage = "The password is invalid. It has to be at least 6 characters.";
+                break;
+            case "auth/user-not-found":
+                errorMessage = "No account matching those credentials could be found.";
+                break;
+            default:
+                errorMessage = "Something went wrong";
+                break;
+        }
+        toast({
+            title: "Error",
+            description: errorMessage,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+        })
+    });
 }
 
 export default Login;

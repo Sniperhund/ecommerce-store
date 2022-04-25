@@ -43,11 +43,11 @@ function Header() {
 function profile(toast: any) {
     const user = auth.currentUser;
 
+    console.log(user);
+
     if (user) {
         var photoURL: string | null = user.photoURL;
         if (photoURL == null) photoURL = "";
-
-        console.log(user);
 
         return (
             <Menu>
