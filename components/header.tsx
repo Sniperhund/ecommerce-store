@@ -1,5 +1,5 @@
-import { auth } from '../lib/firebaseConfig';
-import { Router, useRouter } from 'next/router';
+import { auth } from '../lib/firebaseClient';
+import Router from "next/router";
 import { Button, useToast, Image, Text, Flex, Box, ButtonGroup, Spacer, Link, IconButton, Avatar, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup } from '@chakra-ui/react';
 import { BellIcon } from '@chakra-ui/icons';
 
@@ -57,8 +57,7 @@ function profile(toast: any) {
                 <MenuList>
                     <MenuGroup title={"Welcome back " + user.displayName}>
 
-                   
-                    <MenuItem>Dashboard</MenuItem>
+                    <MenuItem><Link href="/dashboard">Dashboard</Link></MenuItem>
                     <MenuItem>Support</MenuItem>
                     <MenuDivider />
                     <MenuItem onClick={(e) => {
@@ -69,6 +68,7 @@ function profile(toast: any) {
                             isClosable: true,
                         })
                         auth.signOut();
+                        Router.push("/");
                     }}>Sign out</MenuItem>
                     </MenuGroup>
                 </MenuList>

@@ -1,6 +1,6 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { useRef, useState } from "react";
-import { auth } from "../lib/firebaseConfig";
+import { auth } from "../lib/firebaseClient";
 import { createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, 
     signInWithRedirect, fetchSignInMethodsForEmail, signInWithEmailAndPassword, linkWithCredential, AuthCredential, updateProfile } from "firebase/auth";
 import { useToast, Input, Link, Button, Heading, Text, ButtonGroup, AlertDialog, 

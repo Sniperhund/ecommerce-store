@@ -1,6 +1,6 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { useState } from "react";
-import { auth } from "../lib/firebaseConfig";
+import { auth } from "../lib/firebaseClient";
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { useToast, Input, Link, Button, Heading, Text, ButtonGroup, Image } from '@chakra-ui/react'
 import Router from "next/router";
@@ -10,8 +10,6 @@ function Login() {
     const [password, setPassword] = useState<string>("");
 
     const toast = useToast();
-
-    auth.setPersistence(browserSessionPersistence);
 
     return (
         <div>
